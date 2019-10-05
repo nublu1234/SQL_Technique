@@ -28,6 +28,8 @@ FROM DEPT
 
 ### 3.7 Determining Whether Two Tables Have the Same Data
 ```sql
+USE SQL_CookBook;
+
 WITH V AS (
     SELECT * 
     FROM EMP 
@@ -99,6 +101,8 @@ WHERE NOT EXISTS (SELECT NULL
 
 ### 3.12 Using NULLs in Operations and Comparisons
 ```sql
+USE SQL_CookBook;
+
 WITH WARD AS (
     SELECT COMM 
     FROM EMP
