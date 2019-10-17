@@ -1,5 +1,5 @@
 ## Ch 4. Data Filtering & Finding Data(Effective SQL)
-#### INTERSECT in MySQL
+### INTERSECT in MySQL
 <!-- code 4-1 -->
 <!-- 수정하기 -->
 ```sql
@@ -48,7 +48,7 @@ LIMIT 5;
 | Tom | Wickerath | 
 ---
 
-#### NOT EXIST 1
+### NOT EXIST 1
 <!-- code 4-5 -->
 ```sql
 USE SalesOrdersSample;
@@ -66,7 +66,7 @@ WHERE NOT EXISTS
 | 23 | Ultra-Pro Skateboard |  
 ---
 
-#### NOT EXIST 2
+### NOT EXIST 2
 <!-- code 4-5 -->
 ```sql
 USE SalesOrdersSample;
@@ -84,7 +84,7 @@ WHERE od.ProductNumber IS NULL;
 
 ---
 
-#### Customers Ordered Skateboards, Helmets, Knee pads and Gloves(Using INNER JOIN)
+### Customers Ordered Skateboards, Helmets, Knee pads and Gloves(Using INNER JOIN)
 <!-- code 4-12 -->
 ```sql
 USE SalesOrdersSample;
@@ -158,7 +158,7 @@ LIMIT 5
 | 1005 | Tom | Wickerath | 
 ---
 
-#### Customers Ordered Skateboards, Helmets, Knee pads and Gloves(Using WHERE EXISTS)
+### Customers Ordered Skateboards, Helmets, Knee pads and Gloves(Using WHERE EXISTS)
 <!-- code 4-14 -->
 ```sql
 USE SalesOrdersSample;
@@ -207,7 +207,7 @@ LIMIT 5
 
 ---
 
-#### Customers Ordered Skateboards, Helmets, Knee pads and Gloves(Using WHERE IN)
+### Customers Ordered Skateboards, Helmets, Knee pads and Gloves(Using WHERE IN)
 ```sql
 WITH Order_All AS (
 	SELECT o.*, p.ProductNumber, p.ProductName
@@ -270,7 +270,7 @@ LIMIT 5
 | 1004 | Doug | Steele | 
 | 1005 | Tom | Wickerath | 
 ---
-#### Advanced EXISTS
+### Advanced EXISTS
 <!-- code 4-18  -->
 ```sql
 WITH CustomerProducts AS (
@@ -324,7 +324,7 @@ LIMIT 5
 | 1004 | Doug | Steele | 
 | 1005 | Tom | Wickerath | 
 ---
-#### Advanced SQL (Cross Join, Group By, Having)
+### Advanced SQL (Cross Join, Group By, Having)
 <!-- code 4-19 -->
 ```sql
 WITH CustomerProducts AS (
@@ -379,7 +379,7 @@ LIMIT 5
 | 1005 | Tom | Wickerath | 
 ---
 
-#### Include Zero-Value Rows
+### Include Zero-Value Rows
 <!-- code 5-24, 25, 26 --> 
 ```sql
 USE RecipesSample;
@@ -492,7 +492,7 @@ SELECT * FROM Correct_Query1
 | Salmon Filets in Parchment Paper | 2 | 
 --
 
-#### Window Function with PARTITION BY
+### Window Function with PARTITION BY
 <!-- code 5-29 -->
 ```sql
 SELECT

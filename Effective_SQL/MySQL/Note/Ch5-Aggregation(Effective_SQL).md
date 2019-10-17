@@ -1,6 +1,6 @@
 ## Ch 5. Aggregation (Effective SQL)
 
-#### Complex Grouping
+### Complex Grouping
 *[Raw Data]*
 ```sql
 USE Item30Example;
@@ -57,7 +57,7 @@ FROM Inventory
 | \N | \N | 50 | 
 ---
 
-#### Self Join 1
+### Self Join 1
 ```sql
 USE Item30Example;
 
@@ -81,6 +81,8 @@ ORDER BY L.Category
 
 *[Wrong Solution]*
 ```sql
+USE RecipesSample;
+
 SELECT Recipe_Classes.RecipeClassDescription, 
   COUNT(*) AS RecipeCount
 FROM Recipe_Classes 
@@ -100,6 +102,8 @@ GROUP BY Recipe_Classes.RecipeClassDescription
 
 *[Right Solution]*
 ```sql
+USE RecipesSample;
+
 SELECT Recipe_Classes.RecipeClassDescription, COUNT(Recipes.RecipeClassID) AS RecipeCount
 FROM Recipe_Classes 
   LEFT OUTER JOIN Recipes 
@@ -118,6 +122,8 @@ GROUP BY Recipe_Classes.RecipeClassDescription
 ---
 *[Effective Solution]*
 ```sql
+USE RecipesSample;
+
 SELECT Recipe_Classes.RecipeClassDescription, 
   (SELECT COUNT(Recipes.RecipeClassID) 
    FROM Recipes
@@ -141,6 +147,8 @@ FROM Recipe_Classes
 
 *[Wrong Solution]*
 ```sql
+USE RecipesSample;
+
 SELECT Recipes.RecipeTitle, 
   COUNT(Recipe_Ingredients.RecipeID) AS IngredCount
 FROM (((Recipe_Classes 
@@ -168,6 +176,8 @@ HAVING COUNT(Recipe_Ingredients.RecipeID) < 3
 
 *[Right Solution]*
 ```sql
+USE RecipesSample;
+
 SELECT Recipes.RecipeTitle, 
   COUNT(RI.RecipeID) AS IngredCount
 FROM (Recipe_Classes 
@@ -200,6 +210,8 @@ HAVING COUNT(RI.RecipeID) < 3
 
 ### Moving Average
 ```sql
+USE SalesOrdersSample;
+
 SELECT
   o.OrderNumber, o.CustomerID, o.OrderTotal,
   SUM(o.OrderTotal) OVER (
@@ -235,6 +247,8 @@ LIMIT 10
 
 ### Advanced Moving Average
 ```sql
+USE Item39Example;
+
 WITH PurchaseStatistics AS (
 	SELECT 
 		p.CustomerID,
