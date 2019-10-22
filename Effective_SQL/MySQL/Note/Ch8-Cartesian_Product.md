@@ -2,6 +2,8 @@
 
 #### Subquery in CASE WHEN
 ```sql
+USE SalesOrdersSample;
+
 SELECT C.CustomerID, C.CustFirstName, C.CustLastName,
   P.ProductNumber, P.ProductName,
   (CASE WHEN C.CustomerID IN
@@ -27,6 +29,8 @@ LIMIT 5
 
 #### Quintile using CROSS JOIN & RANK
 ```sql
+USE SalesOrdersSample;
+
 WITH ProdSale AS (
 /* Sales of Accessories */
     SELECT OD.ProductNumber
@@ -110,6 +114,8 @@ ORDER BY P1.ProductSales DESC
 
 #### Team to Team Matching
 ```sql
+USE BowlingLeagueSample;
+
 SELECT Teams1.TeamID AS Team1ID, Teams1.TeamName AS Team1Name, Teams2.TeamID AS Team2ID, Teams2.TeamName AS Team2Name
 FROM Teams AS Teams1 CROSS JOIN Teams AS Teams2
 WHERE Teams2.TeamID > Teams1.TeamID
@@ -124,6 +130,8 @@ LIMIT 5
 | 1 | Marlins | 5 | Dolphins | 
 | 1 | Marlins | 6 | Orcas | 
 ```sql
+USE BowlingLeagueSample;
+
 SELECT Teams1.TeamID AS Team1ID, Teams1.TeamName AS Team1Name, Teams2.TeamID AS Team2ID, Teams2.TeamName AS Team2Name
 FROM Teams AS Teams1 INNER JOIN Teams AS Teams2
    ON Teams2.TeamID > Teams1.TeamID
@@ -141,6 +149,8 @@ LIMIT 5
 
 #### One-to-one matching (Full)
 ```sql
+USE BowlingLeagueSample;
+
 WITH TeamPairs AS (
 /* Team to Team Matching */
     SELECT 
@@ -223,6 +233,8 @@ ORDER BY TeamPairs.GameSeq
 
 #### Team to Team Matching (3 Teams)
 ```sql
+USE BowlingLeagueSample;
+
 SELECT Prod1.ProductNumber AS P1Num, Prod1.ProductName AS P1Name,
     Prod2.ProductNumber AS P2Num, Prod2.ProductName AS P2Name,
     Prod3.ProductNumber AS P3Num, Prod3.ProductName AS P3Name
@@ -243,6 +255,8 @@ LIMIT 5
 
 #### Find a Stages that includes all of The Customers' Preferred Genres.
 ```sql
+USE EntertainmentAgencySample;
+
 WITH CustStyles AS (
 /* Preferred Music Genre by Customer */
 SELECT C.CustomerID, C.CustFirstName, 
@@ -299,6 +313,8 @@ ORDER BY CustStyles.CustomerID
 
 #### Preferred Music Genre Matching (Advanced Solution)
 ```sql
+USE EntertainmentAgencySample;
+
 WITH CustPreferences AS (
 /* Preferred Music Genre by Customer */
 SELECT C.CustomerID, C.CustFirstName, C.CustLastName, 
