@@ -67,6 +67,8 @@ FROM Recipe_Classes
 
 ### Subquery with EXISTS
 ```sql
+USE RecipesSample;
+
 SELECT Recipes.RecipeTitle
 FROM Recipes
 WHERE EXISTS 
