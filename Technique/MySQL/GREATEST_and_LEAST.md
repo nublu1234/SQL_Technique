@@ -1,5 +1,7 @@
 ### GREATEST and LEAST
 ```sql
+USE sql_recipe;
+
 SELECT YEAR, q1, q2, q3, q4
       ,GREATEST(q1, q2, q3, q4) AS greatest_sales
       ,LEAST(q1, q2, q3, q4) AS least_sales

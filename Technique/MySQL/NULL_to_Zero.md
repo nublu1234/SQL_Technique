@@ -2,6 +2,8 @@
 
 ### NULL to Zero
 ```sql
+USE sql_recipe;
+
 SELECT *
 /* COALESCE(expr1, expr2): CASE WHEN expr1 IS NULL THEN expr2 ELSE expr1 END */
 /* IF(expr1, expr2): CASE WHEN expr1 IS TRUE THEN expr2 ELSE expr3 END */

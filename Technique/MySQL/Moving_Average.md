@@ -1,7 +1,7 @@
 
 ### Moving Average  
 ```sql
-USE salesorderssample;
+USE item39example;
 
 SELECT
   o.OrderNumber, o.CustomerID, o.OrderTotal,
@@ -40,7 +40,7 @@ LIMIT 10
 
 ### Advanced Moving Average  
 ```sql
-USE salesorderssample;
+USE item39example;
 
 WITH PurchaseStatistics AS (
 	SELECT 
