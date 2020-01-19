@@ -46,91 +46,60 @@ LIMIT 10
 
 ### RANGE *vs* ROWS  
 ```sql
-WITH PurchaseStatistics AS (
-	SELECT 
-		p.CustomerID,
-		EXTRACT(YEAR FROM p.PurchaseDate) AS PurchaseYear,
-		EXTRACT(MONTH FROM p.PurchaseDate) AS PurchaseMonth,
-		SUM(p.PurchaseAmount) AS PurchaseTotal,
-		COUNT(p.PurchaseID) AS PurchaseCount
-	FROM Purchases p
-	GROUP BY 
-		p.CustomerID, 
-		EXTRACT(YEAR FROM p.PurchaseDate),
-		EXTRACT(MONTH FROM p.PurchaseDate)
-ORDER BY p.CustomerID, PurchaseYear, PurchaseMonth
+WITH TEST AS (
+    SELECT 200801 YYYYMM, 100 AMT FROM DUAL
+    UNION ALL 
+	 SELECT 200802, 200 FROM DUAL
+    UNION ALL 
+	 SELECT 200803, 300 FROM DUAL
+    UNION ALL 
+	 SELECT 200804, 400 FROM DUAL
+    UNION ALL 
+	 SELECT 200805, 500 FROM DUAL
+    UNION ALL 
+	 SELECT 200806, 600 FROM DUAL
+    UNION ALL 
+	 SELECT 200808, 800 FROM DUAL
+    UNION ALL 
+	 SELECT 200809, 900 FROM DUAL
+    UNION ALL 
+	 SELECT 200810, 100 FROM DUAL
+    UNION ALL 
+	 SELECT 200811, 200 FROM DUAL
+    UNION ALL 
+	 SELECT 200812, 300 FROM DUAL
 )
--- SELECT * FROM PurchaseStatistics;
+SELECT YYYYMM
+      ,AMT
+      ,SUM(AMT) OVER(ORDER BY YYYYMM
+                RANGE BETWEEN 3 PRECEDING
+                          AND 1 PRECEDING) RNG_PRE3
+      ,SUM(AMT) OVER(ORDER BY YYYYMM
+                RANGE BETWEEN 1 FOLLOWING
+                          AND 3 FOLLOWING) RNG_FOL3
+      ,SUM(AMT) OVER(ORDER BY YYYYMM
+                ROWS BETWEEN 3 PRECEDING
+                         AND 1 PRECEDING) ROW_PRE3
+      ,SUM(AMT) OVER(ORDER BY YYYYMM
+                ROWS BETWEEN 1 FOLLOWING
+                         AND 3 FOLLOWING) ROW_FOL3
+FROM TEST
+```
+| YYYYMM | AMT | RNG_PRE3 | RNG_FOL3 | ROW_PRE3 | ROW_FOL3 | 
+| ---: | ---: | ---: | ---: | ---: | ---: | 
+| 200801 | 100 | \N | 900 | \N | 900 | 
+| 200802 | 200 | 100 | 1200 | 100 | 1200 | 
+| 200803 | 300 | 300 | 1500 | 300 | 1500 | 
+| 200804 | 400 | 600 | 1100 | 600 | 1900 | 
+| 200805 | 500 | 900 | 1400 | 900 | 2300 | 
+| 200806 | 600 | 1200 | 1700 | 1200 | 1800 | 
+| 200808 | 800 | 1100 | 1200 | 1500 | 1200 | 
+| 200809 | 900 | 1400 | 600 | 1900 | 600 | 
+| 200810 | 100 | 1700 | 500 | 2300 | 500 | 
+| 200811 | 200 | 1800 | 300 | 1800 | 300 | 
+| 200812 | 300 | 1200 | \N | 1200 | \N | 
 
-SELECT
-  s.CustomerID, s.PurchaseYear, s.PurchaseMonth, s.PurchaseTotal, s.PurchaseCount,
-  SUM(s.PurchaseCount) OVER (
-    PARTITION BY s.PurchaseYear
-    ORDER BY s.CustomerID
-    ) AS CountByRange1,
-  SUM(s.PurchaseCount) OVER (
-    PARTITION BY s.PurchaseYear
-    ORDER BY s.CustomerID 
-    RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
-    ) AS CountByRange2,
-  SUM(s.PurchaseCount) OVER (
-    PARTITION BY s.PurchaseYear
-    ORDER BY s.CustomerID
-    RANGE BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING 
-    ) AS CountByRange3,
-  SUM(s.PurchaseCount) OVER (
-    PARTITION BY s.PurchaseYear
-    ORDER BY s.CustomerID
-    RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING 
-    ) AS CountByRange4,
-    
-  SUM(s.PurchaseCount) OVER (
-    PARTITION BY s.PurchaseYear
-    ORDER BY s.CustomerID
-    ) AS CountByRows1,
-  SUM(s.PurchaseCount) OVER (
-    PARTITION BY s.PurchaseYear
-    ORDER BY s.CustomerID
-    ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
-    ) AS CountByRows2,
-  SUM(s.PurchaseCount) OVER (
-    PARTITION BY s.PurchaseYear
-    ORDER BY s.CustomerID
-    ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING
-    ) AS CountByRows3,
-  SUM(s.PurchaseCount) OVER (
-    PARTITION BY s.PurchaseYear
-    ORDER BY s.CustomerID
-    ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
-    ) AS CountByRows4
-FROM PurchaseStatistics s
-ORDER BY s.CustomerID, s.PurchaseYear, s.PurchaseMonth
-LIMIT 20
-```  
-
-| CustomerID | PurchaseYear | PurchaseMonth | PurchaseTotal | PurchaseCount | CountByRange1 | CountByRange2 | CountByRange3 | CountByRange4 | CountByRows1 | CountByRows2 | CountByRows3 | CountByRows4 | 
-| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | 
-| 1 | 2011 | 1 | 9660.8633 | 12 | 181 | 181 | 1991 | 1991 | 181 | 12 | 1991 | 1991 | 
-| 1 | 2011 | 2 | 5056.6903 | 12 | 181 | 181 | 1991 | 1991 | 181 | 24 | 1979 | 1991 | 
-| 1 | 2011 | 3 | 3191.9213 | 10 | 181 | 181 | 1991 | 1991 | 181 | 34 | 1967 | 1991 | 
-| 1 | 2011 | 4 | 1830.6725 | 28 | 181 | 181 | 1991 | 1991 | 181 | 62 | 1957 | 1991 | 
-| 1 | 2011 | 5 | 1641.1647 | 19 | 181 | 181 | 1991 | 1991 | 181 | 81 | 1929 | 1991 | 
-| 1 | 2011 | 6 | 1402.5289 | 11 | 181 | 181 | 1991 | 1991 | 181 | 92 | 1910 | 1991 | 
-| 1 | 2011 | 7 | 2517.8133 | 15 | 181 | 181 | 1991 | 1991 | 181 | 107 | 1899 | 1991 | 
-| 1 | 2011 | 8 | 2086.0633 | 10 | 181 | 181 | 1991 | 1991 | 181 | 117 | 1884 | 1991 | 
-| 1 | 2011 | 9 | 4235.6822 | 18 | 181 | 181 | 1991 | 1991 | 181 | 135 | 1874 | 1991 | 
-| 1 | 2011 | 10 | 2944.6052 | 11 | 181 | 181 | 1991 | 1991 | 181 | 146 | 1856 | 1991 | 
-| 1 | 2011 | 11 | 6494.7465 | 21 | 181 | 181 | 1991 | 1991 | 181 | 167 | 1845 | 1991 | 
-| 1 | 2011 | 12 | 4669.6470 | 14 | 181 | 181 | 1991 | 1991 | 181 | 181 | 1824 | 1991 | 
-| 1 | 2012 | 1 | 5899.8256 | 16 | 190 | 190 | 2031 | 2031 | 190 | 16 | 2031 | 2031 | 
-| 1 | 2012 | 2 | 6067.5733 | 15 | 190 | 190 | 2031 | 2031 | 190 | 31 | 2015 | 2031 | 
-| 1 | 2012 | 3 | 5574.9718 | 13 | 190 | 190 | 2031 | 2031 | 190 | 44 | 2000 | 2031 | 
-| 1 | 2012 | 4 | 7749.3873 | 17 | 190 | 190 | 2031 | 2031 | 190 | 61 | 1987 | 2031 | 
-| 1 | 2012 | 5 | 9631.9369 | 19 | 190 | 190 | 2031 | 2031 | 190 | 80 | 1970 | 2031 | 
-| 1 | 2012 | 6 | 6254.6390 | 12 | 190 | 190 | 2031 | 2031 | 190 | 92 | 1951 | 2031 | 
-| 1 | 2012 | 7 | 10202.2599 | 18 | 190 | 190 | 2031 | 2031 | 190 | 110 | 1939 | 2031 | 
-| 1 | 2012 | 8 | 7106.4336 | 12 | 190 | 190 | 2031 | 2031 | 190 | 122 | 1921 | 2031 |   
- 
+> Note that 200807 does not exist.
 
 ---  
 
