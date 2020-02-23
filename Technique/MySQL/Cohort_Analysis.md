@@ -2,6 +2,7 @@
 ```sql
 USE salesorderssample;
 
+/* Order_Product_Details: Make CohortMonth column(It means 'Ordered_Month') */
 WITH Order_Product_Details AS (
     SELECT OD.OrderNumber
           ,O.CustomerID
@@ -24,6 +25,7 @@ WITH Order_Product_Details AS (
 )
 -- SELECT * FROM Order_Product_Details ORDER BY CustomerID, OrderDate;
 
+/* Order_Cohort: Purchase amount per Customer, Month, Category */
 , Order_Cohort AS (
     SELECT CustomerID, CohortMonth, CategoryID, CategoryDescription, COUNT(CustomerID) AS Cohort_CNT
     FROM Order_Product_Details
@@ -33,6 +35,8 @@ WITH Order_Product_Details AS (
 	 HAVING CategoryDescription = 'Car racks' AND COUNT(CustomerID) > 1 */
 )
 -- SELECT * FROM Order_Cohort ORDER BY CustomerID, CohortMonth, CategoryID;
+
+/* CustomerFirstCohort: First Purchase Month per Customer */
 , CustomerFirstCohort AS (
     SELECT CustomerID
 	       ,FIRST_VALUE(CohortMonth) 
@@ -43,6 +47,7 @@ WITH Order_Product_Details AS (
 )
 -- SELECT * FROM CustomerFirstCohort;
 
+/* Order_Cohort2: Make CohortMonth2 column(It means 'CohortMonth - FirstMonth') */
 , Order_Cohort2 AS (
     SELECT OC.CustomerID
 	       ,CFC.FirstMonth
@@ -57,6 +62,7 @@ WITH Order_Product_Details AS (
 )
 -- SELECT * FROM Order_Cohort2 ORDER BY CustomerID;
 
+/* Cohort Analysis */
 SELECT FirstMonth
       ,SUM(CASE WHEN CohortMonth2 = 0 THEN 1 ELSE 0 END) AS Period0
       ,SUM(CASE WHEN CohortMonth2 = 1 THEN 1 ELSE 0 END) AS Period1
@@ -65,7 +71,7 @@ SELECT FirstMonth
       ,SUM(CASE WHEN CohortMonth2 = 4 THEN 1 ELSE 0 END) AS Period4
       ,SUM(CASE WHEN CohortMonth2 = 5 THEN 1 ELSE 0 END) AS Period5
 FROM Order_Cohort2
-GROUP BY FirstMonth
+GROUP BY FirstMonth;
 ```
 | FirstMonth | Period0 | Period1 | Period2 | Period3 | Period4 | Period5 | 
 | ---: | ---: | ---: | ---: | ---: | ---: | ---: | 
